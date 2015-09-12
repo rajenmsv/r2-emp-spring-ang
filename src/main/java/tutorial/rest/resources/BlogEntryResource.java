@@ -1,14 +1,13 @@
 package tutorial.rest.resources;
 
 import org.springframework.hateoas.ResourceSupport;
-import tutorial.core.entities.BlogEntry;
+import tutorial.core.models.entities.BlogEntry;
 
 /**
- * Created by sbhupathiraju on 9/11/15.
+ * Created by Chris on 6/27/14.
  */
 public class BlogEntryResource extends ResourceSupport {
-
-    String title;
+    private String title;
 
     public String getTitle() {
         return title;
