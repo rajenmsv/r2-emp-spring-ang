@@ -1,10 +1,16 @@
 package tutorial.core.models.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Created by sbhupathiraju on 9/12/15.
  */
+@Entity
 public class Account {
 
+    @Id @GeneratedValue
     private Long id;
     private String name;
     private String password;
