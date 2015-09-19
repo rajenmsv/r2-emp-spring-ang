@@ -10,8 +10,14 @@ import java.util.List;
  * Created by sbhupathiraju on 9/12/15.
  */
 public class BlogEntryList {
+
     private List<BlogEntry> entries = new ArrayList<BlogEntry>();
     private Long blogId;
+
+    public BlogEntryList(Long blogId, List<BlogEntry> entries) {
+        this.blogId = blogId;
+        this.entries = entries;
+    }
 
     public List<BlogEntry> getEntries() {
         return entries;

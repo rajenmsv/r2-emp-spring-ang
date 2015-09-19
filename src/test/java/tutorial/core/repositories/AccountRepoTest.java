@@ -1,8 +1,5 @@
 package tutorial.core.repositories;
 
-
-
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import tutorial.core.models.entities.Account;
 
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 
 /**
  * Created by sbhupathiraju on 9/18/15.
@@ -24,28 +20,29 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration("classpath:spring/business-config.xml")
 public class AccountRepoTest {
 
-    private Account account = new Account();
-
     @Autowired
     private AccountRepo repo;
+
+    private Account account;
 
     @Before
     @Transactional
     @Rollback(false)
-    public  void setup(){
+    public void setup()
+    {
         account = new Account();
         account.setName("name");
         account.setPassword("password");
-        
         repo.createAccount(account);
-        
-    }
-    
-    
-    @Test
-    @Transactional
-    public void testFind(){
-        assertNotNull(repo.findAccount(account.getId()));
     }
 
+    @Test
+    @Transactional
+    public void testFind()
+    {
+        Account account = repo.findAccount(this.account.getId());
+        assertNotNull(account);
+        assertEquals(account.getName(), "name");
+        assertEquals(account.getPassword(), "password");
+    }
 }

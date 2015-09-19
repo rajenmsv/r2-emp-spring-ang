@@ -1,14 +1,22 @@
 package tutorial.core.models.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
 /**
  * Created by sbhupathiraju on 9/12/15.
  */
+@Entity
 public class Blog {
 
+    @Id @GeneratedValue
     private Long id;
 
     private String title;
 
+    @OneToOne
     private Account owner;
 
     public Long getId() {
