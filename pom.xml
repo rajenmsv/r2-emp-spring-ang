@@ -120,7 +120,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -142,7 +142,7 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
--->
+
 
     </dependencies>
 

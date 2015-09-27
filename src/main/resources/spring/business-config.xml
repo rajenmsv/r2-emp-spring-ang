@@ -45,6 +45,7 @@
     </bean>
 
     <context:component-scan base-package="tutorial.core.services.impl" />
+    <context:component-scan base-package="tutorial.core.security" />
 
 
 </beans>

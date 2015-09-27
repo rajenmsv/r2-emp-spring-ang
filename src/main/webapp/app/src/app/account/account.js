@@ -40,8 +40,17 @@ angular.module('ngBoilerplate.account', ['ui.router', 'ngResource', 'base64'])
 .factory('sessionService', function($http, $base64) {
     var session = {};
     session.login = function(data) {
-        alert('user logged in with credentials ' + data.name + " and " + data.password);
-        localStorage.setItem("session", data);
+        return $http.post("/employee-portal/login","username=" + data.name +
+        "&password="+data.password,{
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function(data){
+          alert("login successful");
+          localStorage.setItem("session", {});
+        }, function(data){
+            alert("Error logging in");
+        });
+
+
     };
     session.logout = function() {
         localStorage.removeItem("session");
@@ -88,8 +97,10 @@ angular.module('ngBoilerplate.account', ['ui.router', 'ngResource', 'base64'])
 .controller("LoginCtrl", function($scope, sessionService, accountService, $state) {
     $scope.login = function() {
         accountService.userExists($scope.account, function(account) {
-            sessionService.login($scope.account);
-            $state.go("home");
+            sessionService.login($scope.account).then(function(){
+                    $state.go("home");
+                });
+
         },
         function() {
             alert("Error logging in user");
@@ -100,8 +111,9 @@ angular.module('ngBoilerplate.account', ['ui.router', 'ngResource', 'base64'])
     $scope.register = function() {
         accountService.register($scope.account,
         function(returnedData) {
-            sessionService.login($scope.account);
-            $state.go("home");
+            sessionService.login($scope.account).then(function(){
+                $state.go("home");
+            });
         },
         function() {
             alert("Error registering user");
