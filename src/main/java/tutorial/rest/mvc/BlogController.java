@@ -27,7 +27,9 @@ import tutorial.rest.resources.asm.BlogResourceAsm;
 
 import java.net.URI;
 
-
+/**
+ * Created by Chris on 6/28/14.
+ */
 @Controller
 @RequestMapping("/rest/blogs")
 public class BlogController {
@@ -39,6 +41,7 @@ public class BlogController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+//    @PreAuthorize("permitAll")
     public ResponseEntity<BlogListResource> findAllBlogs()
     {
         BlogList blogList = blogService.findAllBlogs();
@@ -47,7 +50,7 @@ public class BlogController {
     }
 
     @RequestMapping(value="/{blogId}",
-            method = RequestMethod.GET)
+        method = RequestMethod.GET)
     public ResponseEntity<BlogResource> getBlog(@PathVariable Long blogId)
     {
         Blog blog = blogService.findBlog(blogId);

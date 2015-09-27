@@ -1,4 +1,3 @@
-
 package tutorial.rest.mvc;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import tutorial.core.services.util.AccountList;
 import tutorial.core.services.util.BlogList;
 import tutorial.rest.exceptions.BadRequestException;
 import tutorial.rest.exceptions.ConflictException;
+import tutorial.rest.exceptions.ForbiddenException;
 import tutorial.rest.exceptions.NotFoundException;
 import tutorial.rest.resources.AccountListResource;
 import tutorial.rest.resources.AccountResource;
@@ -31,10 +31,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Created by Chris on 6/28/14.
+ */
 @Controller
 @RequestMapping("/rest/accounts")
 public class AccountController {
-
     private AccountService accountService;
 
     @Autowired
@@ -43,16 +45,22 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<AccountListResource> findAllAccounts(@RequestParam(value="name", required = false) String name) {
+ //   @PreAuthorize("permitAll")
+    public ResponseEntity<AccountListResource> findAllAccounts(@RequestParam(value="name", required = false) String name, @RequestParam(value="password", required = false) String password) {
         AccountList list = null;
         if(name == null) {
             list = accountService.findAllAccounts();
         } else {
             Account account = accountService.findByAccountName(name);
-            if(account == null) {
-                list = new AccountList(new ArrayList<Account>());
-            } else {
-                list = new AccountList(Arrays.asList(account));
+            list = new AccountList(new ArrayList<Account>());
+            if(account != null) {
+                if(password != null) {
+                    if(account.getPassword().equals(password)) {
+                        list = new AccountList(Arrays.asList(account));
+                    }
+                } else {
+                    list = new AccountList(Arrays.asList(account));
+                }
             }
         }
         AccountListResource res = new AccountListResourceAsm().toResource(list);
@@ -60,6 +68,7 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
+ //   @PreAuthorize("permitAll")
     public ResponseEntity<AccountResource> createAccount(
             @RequestBody AccountResource sentAccount
     ) {
@@ -75,7 +84,8 @@ public class AccountController {
     }
 
     @RequestMapping( value="/{accountId}",
-            method = RequestMethod.GET)
+                method = RequestMethod.GET)
+//    @PreAuthorize("permitAll")
     public ResponseEntity<AccountResource> getAccount(
             @PathVariable Long accountId
     ) {
@@ -90,28 +100,41 @@ public class AccountController {
     }
 
     @RequestMapping(value="/{accountId}/blogs",
-            method = RequestMethod.POST)
+        method = RequestMethod.POST)
+//    @PreAuthorize("permitAll")
     public ResponseEntity<BlogResource> createBlog(
             @PathVariable Long accountId,
             @RequestBody BlogResource res)
     {
-        try {
-            Blog createdBlog = accountService.createBlog(accountId, res.toBlog());
-            BlogResource createdBlogRes = new BlogResourceAsm().toResource(createdBlog);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create(createdBlogRes.getLink("self").getHref()));
-            return new ResponseEntity<BlogResource>(createdBlogRes, headers, HttpStatus.CREATED);
-        } catch(AccountDoesNotExistException exception)
-        {
-            throw new NotFoundException(exception);
-        } catch(BlogExistsException exception)
-        {
-            throw new ConflictException(exception);
-        }
+   //     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //if(principal instanceof UserDetails) {
+ //           UserDetails details = (UserDetails)principal;
+  //          Account loggedIn = accountService.findByAccountName(details.getUsername());
+ //           if(loggedIn.getId() == accountId) {
+                try {
+                    Blog createdBlog = accountService.createBlog(accountId, res.toBlog());
+                    BlogResource createdBlogRes = new BlogResourceAsm().toResource(createdBlog);
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setLocation(URI.create(createdBlogRes.getLink("self").getHref()));
+                    return new ResponseEntity<BlogResource>(createdBlogRes, headers, HttpStatus.CREATED);
+                } catch(AccountDoesNotExistException exception)
+                {
+                    throw new NotFoundException(exception);
+                } catch(BlogExistsException exception)
+                {
+                    throw new ConflictException(exception);
+                }
+//            } else {
+//                throw new ForbiddenException();
+//            }
+//        } else {
+//            throw new ForbiddenException();
+//        }
     }
 
     @RequestMapping(value="/{accountId}/blogs",
             method = RequestMethod.GET)
+//    @PreAuthorize("permitAll")
     public ResponseEntity<BlogListResource> findAllBlogs(
             @PathVariable Long accountId) {
         try {
