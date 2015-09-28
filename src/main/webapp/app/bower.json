@@ -7,8 +7,10 @@
     "angular-mocks": "~1.2",
     "angular-resource": "1.2",
     "angular-ui-router": "~0.2",
-    "bootstrap": "~3.1"
-  },
+    "bootstrap": "~3.1",
+    "angular-hateoas": "0.2.5",
+    "angular-base64":"2.0.4" 
+ },
   "dependencies": {},
   "resolutions": {
     "angular": "1.2.21"
